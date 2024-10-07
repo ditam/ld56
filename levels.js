@@ -1,20 +1,55 @@
 
-function level1Impl(config, container, callback) {
+function level_paintFill(config, container, callback) {
   console.log('Starting level 1 with conf:', config);
 
   const WIDTH = 800;
   const HEIGHT = 500;
+  let mousePressed = false;
+  let paintCount = 0;
+  const maxPaintCount = 40;
 
+  const timerWrap = $('<div>').addClass('timer-wrapper');
+  const timerLabel = $('<div>').addClass('label').text('Spores left');
+  timerLabel.appendTo(timerWrap);
+  const timerBar = $('<div>').addClass('bar');
+  const timerValue = $('<div>').addClass('value');
+  timerValue.appendTo(timerBar);
+
+  timerBar.appendTo(timerWrap);
+
+  timerWrap.appendTo(container); // append before canvas to not mess with mouseover
+
+  // set up canvas
   const canvas = $('<canvas>').attr('width', WIDTH).attr('height', HEIGHT);
   canvas.css('border', '1px solid red');
   canvas.css('opacity', '0.33');
   canvas.appendTo(container);
 
   const ctx = canvas[0].getContext('2d');
-
   ctx.fillStyle = 'green';
 
-  let mousePressed = false;
+  // set up UI updates
+
+  function update() {
+    if (mousePressed) {
+      // register paint count -- note that we don't increase the counter on mousemove,
+      // because the frequency of those events is highly platform-specific
+      paintCount++;
+      if (paintCount > maxPaintCount) {
+        // evaluate();
+        timerValue.css('width', 0);
+      } else {
+        const pct = (maxPaintCount-paintCount)/maxPaintCount * 100;
+        timerValue.css('width', pct + '%');
+      }
+    }
+  }
+
+  let updateInterval = setInterval(update, 100);
+  // TODO: clear interval on exit
+
+
+  // set up interaction
   canvas.on('mousedown', (event) => {
     mousePressed = true;
   });
@@ -33,6 +68,12 @@ function level1Impl(config, container, callback) {
     let c1 = 0;
     let c2 = 0;
     for (let i = 0; i < data.length; i += 4) {
+      const col = i%(WIDTH*4) / 4;
+      if (col < 300) { // clear first n cols
+        // NB: we don't write it back to the canvas, just clearing it for the counting below
+        data[i + 3] = 0;
+      }
+
       if (data[i + 3]) { // counting alpha channel
         c1++;
       } else {
@@ -72,7 +113,7 @@ const levels = [{
     valueA: 5,
     valueB: 25
   },
-  controller: level1Impl
+  controller: level_paintFill
 },{
   name: 'test2',
   config: {},

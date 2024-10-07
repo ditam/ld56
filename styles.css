@@ -16,3 +16,28 @@ body {
   border: 1px solid black;
   cursor: pointer;
 }
+
+.timer-wrapper {
+  position: absolute;
+  left: 100px;
+  top: 400px;
+}
+
+.timer-wrapper .label {
+  color: white;
+  opacity: 0.3;
+  text-align: center;
+}
+
+.timer-wrapper .bar {
+  width: 500px;
+  height: 32px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.timer-wrapper .bar .value {
+  width: 100%;
+  /* width re-set from JS */
+  height: 32px;
+  background-color: rgba(239, 161, 51, 0.3);
+}
