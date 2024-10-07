@@ -34,7 +34,7 @@ function showFadingTitle(config, container, callback) {
 }
 
 function showNarrativePage(container, msgs, callback) {
-  const keywords = ['lichens']; // careful here, see html hacking below
+  const keywords = ['lichens', 'bacteria', 'insects', 'rodents', 'humans']; // careful here, see html hacking below
   const wrap = $('<div>').addClass('narrative-wrapper').appendTo(container);
   msgs.forEach(msg => {
     let htmlMsg = msg;
@@ -156,6 +156,7 @@ function paintFill_core(config, container, callback) {
     if (result >= threshold) {
       clearInterval(updateInterval);
       successSound.play();
+      hideTaskMsg();
       callback({
         result: result,
         attempts: attempts
@@ -186,34 +187,203 @@ function paintFill_core(config, container, callback) {
   });
 }
 
-function level2Impl(config, container, callback) {
-  console.log('Starting level 2 with conf:', config);
+function level_bacteria(config, container, callback) {
+  showFadingTitle(
+    {
+      // TODO: move to config
+      titleText: 'Chapter Two',
+      subtitleText: 'Bacteria',
+    },
+    container,
+    function() {
+      $('.title-wrapper').remove();
+      console.log('moving to narrative page');
+      showNarrativePage(container, config.narrativeMsgs, function() {
+        console.log('moving to impl.');
+        const startTime = new Date().getTime();
+        showTask(container, config.task);
 
-  const div1 = $('<div>').addClass('test-sq');
-  const div2 = $('<div>').addClass('test-sq');
+        const targetsData = [
+          {x: 200, y:  80},
+          {x: 510, y: 110},
+          {x: 620, y: 150},
+          {x: 520, y: 220},
+          {x:  60, y: 330},
+        ];
 
-  container.append(div1);
-  container.append(div2);
+        const targetEls = [];
 
-  let d1Clicked = false;
-  let d2Clicked = false;
+        targetsData.forEach(t => {
+          const target = $('<div>').addClass('target-marker');
+          targetEls.push(target);
+          target.css('left', t.x + 'px');
+          target.css('top' , t.y + 'px');
+          container.append(target);
+          target.data('clicked', false);
+          target.on('click', () => {
+            target.data('clicked', true);
+            target.addClass('clicked');
+            checkComplete();
+          });
+        });
 
-  div1.on('click', () => {d1Clicked = true; checkComplete();})
-  div2.on('click', () => {d2Clicked = true; checkComplete();})
-
-  function checkComplete() {
-    if (d1Clicked && d2Clicked) {
-      callback('done!');
+        function checkComplete() {
+          if (targetEls.every(t=>t.data('clicked'))) {
+            const endTime = new Date().getTime();
+            hideTaskMsg();
+            successSound.play();
+            callback({duration: endTime-startTime});
+          }
+        }
+      });
     }
-  }
+  );
 }
 
+function level_insects(config, container, callback) {
+  showFadingTitle(
+    {
+      // TODO: move to config
+      titleText: 'Chapter Three',
+      subtitleText: 'Insects',
+    },
+    container,
+    function() {
+      $('.title-wrapper').remove();
+      console.log('moving to narrative page');
+      showNarrativePage(container, config.narrativeMsgs, function() {
+        console.log('moving to impl.');
+        const startTime = new Date().getTime();
+        showTask(container, config.task);
+
+        const targetsData = [
+          {x:  30, y:  50},
+          {x: 570, y:  80},
+          {x: 620, y: 120},
+          {x: 300, y: 220},
+          {x: 310, y: 350},
+          {x:  60, y: 400},
+          {x: 290, y: 410},
+          {x: 600, y: 430},
+        ];
+
+        const targetEls = [];
+
+        targetsData.forEach(t => {
+          const target = $('<div>').addClass('target-marker small');
+          targetEls.push(target);
+          target.css('left', t.x + 'px');
+          target.css('top' , t.y + 'px');
+          container.append(target);
+          target.data('clicked', false);
+          target.on('click', () => {
+            target.data('clicked', true);
+            target.addClass('clicked');
+            checkComplete();
+          });
+        });
+
+        function isComplete() {
+          return targetEls.every(t=>t.data('clicked'));
+        }
+
+        function checkComplete() {
+          if (isComplete()) {
+            const endTime = new Date().getTime();
+            hideTaskMsg();
+            successSound.play();
+            callback({duration: endTime-startTime, attempts: attempts});
+            clearInterval(expireTimeout);
+          }
+        }
+
+        // FIXME: display timer
+        let attempts = 0;
+        let expireTimeout = setInterval(function() {
+          // if this timeout is reached without checkComplete clearing it, we lose and reset
+          attempts++;
+          errorSound.play();
+          targetEls.forEach(t => {
+            t.data('clicked', false);
+            t.removeClass('clicked');
+          });
+        }, 15 * 1000);
+      });
+    }
+  );
+}
+
+function level_humans(config, container, callback) {
+  showFadingTitle(
+    {
+      // TODO: move to config
+      titleText: 'Epilogue',
+      subtitleText: 'Humans',
+    },
+    container,
+    function() {
+      $('.title-wrapper').remove();
+      console.log('moving to narrative page');
+      showNarrativePage(container, config.narrativeMsgs, function() {
+        console.log('moving to impl.');
+        const startTime = new Date().getTime();
+        showTask(container, config.task);
+
+        const targetsData = [
+          {x: 200, y:  80},
+          {x: 510, y: 110},
+          {x: 620, y: 150},
+          {x: 520, y: 220},
+          {x:  60, y: 330},
+          {x:  30, y:  50},
+          {x: 570, y:  80},
+          {x: 620, y: 120},
+          {x: 300, y: 220},
+          {x: 310, y: 350},
+          {x:  60, y: 400},
+          {x: 290, y: 410},
+          {x: 600, y: 430},
+        ];
+
+        const targetEls = [];
+
+        targetsData.forEach(t => {
+          // FIXME: alternate wood and animal types
+          const target = $('<div>').addClass('target-marker');
+          targetEls.push(target);
+          target.css('left', t.x + 'px');
+          target.css('top' , t.y + 'px');
+          container.append(target);
+          target.data('clicked', false);
+          target.on('click', () => {
+            target.data('clicked', true);
+            target.addClass('clicked');
+            checkComplete();
+          });
+        });
+
+        function checkComplete() {
+          if (targetEls.every(t=>t.data('clicked'))) {
+            const endTime = new Date().getTime();
+            hideTaskMsg();
+            successSound.play();
+            callback({duration: endTime-startTime});
+          }
+        }
+      });
+    }
+  );
+}
+
+
 let currentLevel = 0;
-const levels = [{
+const levels = [
+{
   name: 'intro',
   config: {},
   controller: intro
-}, {
+},
+{
   name: 'Lichens - area painting',
   config: {
     task: 'Cover 50% of the sunny areas with lichen spores.',
@@ -226,11 +396,45 @@ const levels = [{
     ],
   },
   controller: level_paintFill
-}, {
-  name: 'test2',
-  config: {},
-  controller: level2Impl
-}];
+},
+{
+  name: 'Bacteria - untimed target clicking',
+  config: {
+    task: 'Establish bacterial colonies around organic matter.',
+    narrativeMsgs: [
+      'As lichens accumulate over the barren surface, a layer of soil forms out of their organic material.',
+      'Microrganisms such as bacteria, protozoa and nematodes further break down the soil organic matter.',
+      'These processes encourage the nitrogen cycle, generating yet more soil and ultimately an environment ' +
+      'more capable of sustaining complex plant life.'
+    ],
+  },
+  controller: level_bacteria
+},
+{
+  name: 'Insects - timed clicking',
+  config: {
+    task: 'Pollinate all flowering plants before the season ends.',
+    narrativeMsgs: [
+      'As the atmosphere clears and the soil grows, various herbaceous plants take root: ferns, grasses and other flowering plants.',
+      'The community can now sustain plant-eating animals as well as insects that act as pollinators.',
+      'Man-made structures decay and crumble just like the once barren rock.'
+    ],
+  },
+  controller: level_insects
+},
+{
+  name: 'Humans - untimed clicking',
+  config: {
+    task: 'Hunt wildlife and chop down trees.',
+    narrativeMsgs: [
+      'Once the community can sustain mammals, humans emerge from their bunkers and other life-suspending contraptions, ' +
+      'much like resilient trees from the earth\'s seed banks, or cocroaches from their nests.',
+      'An apex predator, likely to consume more than it needs, set loose upon the land once again.'
+    ],
+  },
+  controller: level_humans
+}
+];
 
 levels.forEach((o,i) => {
   console.assert(o.name, 'No name for level', i);

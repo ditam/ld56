@@ -1,6 +1,11 @@
 
 let container;
 
+function showFinalScore() {
+  console.log('RESULTS:', results);
+}
+
+const results = [];
 function startNextLevel() {
 
   const level = levels[currentLevel];
@@ -9,10 +14,14 @@ function startNextLevel() {
 
   level.controller(level.config, container, function(res) {
     console.log('level done, result:', res);
+    results.push(res);
     container.empty();
-    currentLevel++;
-    // TODO: confirm we didn't finish levels - add end condition and scoring
-    startNextLevel();
+    if (currentLevel >= levels.length -1) {
+      showFinalScore();
+    } else {
+      currentLevel++;
+      startNextLevel();
+    }
   });
 }
 
@@ -51,7 +60,7 @@ $(document).ready(function() {
       this.play();
     }, false);
 
-    currentLevel = 1;
+    currentLevel = 0;
     startNextLevel();
   });
 
