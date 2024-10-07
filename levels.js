@@ -61,6 +61,16 @@ function hideTaskMsg() {
   $('.task-msg').remove();
 }
 
+function setBG(n) {
+  const bgs = [
+    'bg.png',
+    'bg2.png',
+    'bg3.png',
+    'bg4.png',
+  ];
+  $('#main').css('background-image', `url(${bgs[n]})`);
+}
+
 function intro(config, container, callback) {
   showFadingTitle({titleText: 'Succession'}, container, callback);
 }
@@ -74,6 +84,7 @@ function level_paintFill(config, container, callback) {
     },
     container,
     function() {
+      // this is the first actual task - no setBG yet
       $('.title-wrapper').remove();
       console.log('moving to narrative page');
       showNarrativePage(container, config.narrativeMsgs, function() {
@@ -196,6 +207,7 @@ function level_bacteria(config, container, callback) {
     },
     container,
     function() {
+      setBG(1);
       $('.title-wrapper').remove();
       console.log('moving to narrative page');
       showNarrativePage(container, config.narrativeMsgs, function() {
@@ -249,6 +261,7 @@ function level_insects(config, container, callback) {
     },
     container,
     function() {
+      setBG(2);
       $('.title-wrapper').remove();
       console.log('moving to narrative page');
       showNarrativePage(container, config.narrativeMsgs, function() {
@@ -322,6 +335,7 @@ function level_humans(config, container, callback) {
     },
     container,
     function() {
+      setBG(3);
       $('.title-wrapper').remove();
       console.log('moving to narrative page');
       showNarrativePage(container, config.narrativeMsgs, function() {
