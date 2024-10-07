@@ -8,7 +8,7 @@ let xPosition = 0;
 
 let container;
 
-function start() {
+function startNextLevel() {
 
   const level = levels[currentLevel];
   console.log(`-starting, level ${currentLevel}/${levels.length}`);
@@ -16,6 +16,10 @@ function start() {
 
   level.controller(level.config, container, function(res) {
     console.log('level done, result:', res);
+    container.empty();
+    currentLevel++;
+    // TODO: confirm we didn't finish levels - add end condition and scoring
+    startNextLevel();
   });
 }
 
@@ -51,7 +55,7 @@ $(document).ready(function() {
       this.play();
     }, false);
 
-    start();
+    startNextLevel();
   });
 
   songs.forEach(countWhenLoaded);

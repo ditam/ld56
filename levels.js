@@ -1,36 +1,59 @@
 
-function showFadingTitle(container, callback, titleText, subtitleText) {
+function showFadingTitle(config, container, callback) {
   const FADE_IN_DURATION = 2000;
   const ERASE_DURATION = 3000; // should be the same as CSS transition duration on eraser, but in ms
   const wrap = $('<div>').addClass('title-wrapper').appendTo(container);
-  const title = $('<div>').addClass('title header').text(titleText).appendTo(wrap);
+  const title = $('<div>').addClass('title header').text(config.titleText).appendTo(wrap);
 
-  if (subtitleText) {
+  if (config.subtitleText) {
     title.addClass('with-subtitle');
-    const subtitle = $('<div>').addClass('subtitle text').text(subtitleText).appendTo(wrap);
+    const subtitle = $('<div>').addClass('subtitle text').text(config.subtitleText).appendTo(wrap);
   }
-  setTimeout(function() {
-    wrap.addClass('black');
+
+  const eraser = $('<div>').addClass('eraser');
+
+  function startDelayedEraser() {
+    eraser.appendTo(wrap);
     setTimeout(function() {
-      // we need to delay creating the eraser until the fade-to-black is completed
-      const eraser = $('<div>').addClass('eraser').appendTo(wrap);
-      setTimeout(function() {
-        eraser.addClass('on');
-        // after the transition of eraser, we fade out and call back
-        setTimeout(callback, ERASE_DURATION);
-      }, 2000);
-    }, FADE_IN_DURATION);
-  }, 2000);
+      eraser.addClass('on');
+      // after the transition of eraser, we fade out and call back
+      setTimeout(callback, ERASE_DURATION);
+    }, 2000);
+  }
+
+  if (config.skipFadeIn) {
+    wrap.addClass('black');
+    startDelayedEraser();
+  } else {
+    setTimeout(function() {
+      wrap.addClass('black');
+      // we need to delay creating the eraser until the fade-to-black is completed, otherwise it will show up as a block
+      setTimeout(startDelayedEraser, FADE_IN_DURATION);
+    }, 2000);
+  }
 }
 
 function intro(config, container, callback) {
-  showFadingTitle(container, callback, 'Succession');
-  //showFadingTitle(container, callback, 'Chapter One', 'Lichens');
+  showFadingTitle({titleText: 'Succession'}, container, callback);
 }
 
 function level_paintFill(config, container, callback) {
-  console.log('Starting level 1 with conf:', config);
+  showFadingTitle(
+    {
+      titleText: 'Chapter One',
+      subtitleText: 'Lichens',
+      skipFadeIn: true,
+    },
+    container,
+    function() {
+      $('.title-wrapper').remove();
+      console.log('moving to impl.');
+      paintFill_core(config, container, callback);
+    }
+  );
+}
 
+function paintFill_core(config, container, callback) {
   const WIDTH = 800;
   const HEIGHT = 500;
   let mousePressed = false;
