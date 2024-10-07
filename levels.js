@@ -1,4 +1,33 @@
 
+function showFadingTitle(container, callback, titleText, subtitleText) {
+  const FADE_IN_DURATION = 2000;
+  const ERASE_DURATION = 3000; // should be the same as CSS transition duration on eraser, but in ms
+  const wrap = $('<div>').addClass('title-wrapper').appendTo(container);
+  const title = $('<div>').addClass('title header').text(titleText).appendTo(wrap);
+
+  if (subtitleText) {
+    title.addClass('with-subtitle');
+    const subtitle = $('<div>').addClass('subtitle text').text(subtitleText).appendTo(wrap);
+  }
+  setTimeout(function() {
+    wrap.addClass('black');
+    setTimeout(function() {
+      // we need to delay creating the eraser until the fade-to-black is completed
+      const eraser = $('<div>').addClass('eraser').appendTo(wrap);
+      setTimeout(function() {
+        eraser.addClass('on');
+        // after the transition of eraser, we fade out and call back
+        setTimeout(callback, ERASE_DURATION);
+      }, 2000);
+    }, FADE_IN_DURATION);
+  }, 2000);
+}
+
+function intro(config, container, callback) {
+  showFadingTitle(container, callback, 'Succession');
+  //showFadingTitle(container, callback, 'Chapter One', 'Lichens');
+}
+
 function level_paintFill(config, container, callback) {
   console.log('Starting level 1 with conf:', config);
 
@@ -108,13 +137,17 @@ function level2Impl(config, container, callback) {
 
 let currentLevel = 0;
 const levels = [{
+  name: 'intro',
+  config: {},
+  controller: intro
+}, {
   name: 'test level',
   config: {
     valueA: 5,
     valueB: 25
   },
   controller: level_paintFill
-},{
+}, {
   name: 'test2',
   config: {},
   controller: level2Impl
