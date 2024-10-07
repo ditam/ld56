@@ -33,6 +33,26 @@ function showFadingTitle(config, container, callback) {
   }
 }
 
+function showNarrativePage(container, msgs, callback) {
+  const keywords = ['lichens']; // careful here, see html hacking below
+  const wrap = $('<div>').addClass('narrative-wrapper').appendTo(container);
+  msgs.forEach(msg => {
+    let htmlMsg = msg;
+    keywords.forEach(word => {
+      if (htmlMsg.includes(word)) {
+        htmlMsg = htmlMsg.replace(word, `<span>${word}</span>`);
+      }
+    })
+    $('<div>').addClass('text').html(htmlMsg).appendTo(wrap);
+  });
+  $('<div>').addClass('text spaced').text('Click to continue.').appendTo(wrap);
+
+  wrap.on('click', function() {
+    wrap.remove();
+    callback();
+  });
+}
+
 function showTask(container, taskMsg) {
   $('<div>').addClass('task-msg text').text('Task: '+taskMsg).appendTo(container);
 }
@@ -55,14 +75,17 @@ function level_paintFill(config, container, callback) {
     container,
     function() {
       $('.title-wrapper').remove();
-      console.log('moving to impl.');
-      paintFill_core(config, container, callback);
+      console.log('moving to narrative page');
+      showNarrativePage(container, config.narrativeMsgs, function() {
+        console.log('moving to impl.');
+        paintFill_core(config, container, callback);
+      });
     }
   );
 }
 
 function paintFill_core(config, container, callback) {
-  showTask(container, 'Cover 50% of the sunny areas with spores.');
+  showTask(container, config.task);
   const WIDTH = 800;
   const HEIGHT = 500;
   let mousePressed = false;
@@ -191,10 +214,16 @@ const levels = [{
   config: {},
   controller: intro
 }, {
-  name: 'test level',
+  name: 'Lichens - area painting',
   config: {
-    valueA: 5,
-    valueB: 25
+    task: 'Cover 50% of the sunny areas with lichen spores.',
+    narrativeMsgs: [
+      'A sun-blocking catastrophe can make large swathes of land uninhabitable to most aspects of life.',
+      'Fertile soil itself might become a scarce resource as ' +
+      'decomposition rates of organic matter plummet due to decreased precipitation and temperature.',
+      'The first species capable of colonizing a barren area are often lichens, as they can grow in the driest conditions, ' +
+      'sustaining themselves with photosynthesis.'
+    ],
   },
   controller: level_paintFill
 }, {
