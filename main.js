@@ -1,17 +1,10 @@
 
-const WIDTH = 800;
-const HEIGHT = 500;
-
-let ctx;
-
-let xPosition = 0;
-
 let container;
 
 function startNextLevel() {
 
   const level = levels[currentLevel];
-  console.log(`-starting, level ${currentLevel}/${levels.length}`);
+  console.log(`-starting, level ${currentLevel+1}/${levels.length}`);
   console.log('level ref:', level);
 
   level.controller(level.config, container, function(res) {
@@ -24,6 +17,7 @@ function startNextLevel() {
 }
 
 let songs, sounds;
+let errorSound, successSound;
 
 $(document).ready(function() {
   container = $('#main');
@@ -33,9 +27,11 @@ $(document).ready(function() {
   ];
 
   errorSound = new Audio('error.mp3');
+  successSound = new Audio('success.mp3');
 
   sounds = [
     errorSound,
+    successSound,
   ];
 
   let audioLoadCount = 0;
@@ -55,6 +51,7 @@ $(document).ready(function() {
       this.play();
     }, false);
 
+    currentLevel = 1;
     startNextLevel();
   });
 

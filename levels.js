@@ -33,6 +33,14 @@ function showFadingTitle(config, container, callback) {
   }
 }
 
+function showTask(container, taskMsg) {
+  $('<div>').addClass('task-msg text').text('Task: '+taskMsg).appendTo(container);
+}
+
+function hideTaskMsg() {
+  $('.task-msg').remove();
+}
+
 function intro(config, container, callback) {
   showFadingTitle({titleText: 'Succession'}, container, callback);
 }
@@ -54,6 +62,7 @@ function level_paintFill(config, container, callback) {
 }
 
 function paintFill_core(config, container, callback) {
+  showTask(container, 'Cover 50% of the sunny areas with spores.');
   const WIDTH = 800;
   const HEIGHT = 500;
   let mousePressed = false;
@@ -88,8 +97,8 @@ function paintFill_core(config, container, callback) {
       // because the frequency of those events is highly platform-specific
       paintCount++;
       if (paintCount > maxPaintCount) {
-        // evaluate();
         timerValue.css('width', 0);
+        evaluate();
       } else {
         const pct = (maxPaintCount-paintCount)/maxPaintCount * 100;
         timerValue.css('width', pct + '%');
@@ -98,23 +107,9 @@ function paintFill_core(config, container, callback) {
   }
 
   let updateInterval = setInterval(update, 100);
-  // TODO: clear interval on exit
 
-
-  // set up interaction
-  canvas.on('mousedown', (event) => {
-    mousePressed = true;
-  });
-  canvas.on('mousemove', (event) => {
-    if (mousePressed) {
-      ctx.beginPath();
-      ctx.arc(event.clientX, event.clientY, 30, 0, 2 * Math.PI);
-      ctx.fill();
-    }
-  });
-  canvas.on('mouseup', (event) => {
-    mousePressed = false;
-
+  let attempts = 0;
+  function evaluate() {
     const imageData = ctx.getImageData(0, 0, WIDTH, HEIGHT);
     const data = imageData.data;
     let c1 = 0;
@@ -132,7 +127,39 @@ function paintFill_core(config, container, callback) {
         c2++;
       }
     }
-    console.log('colored ratio:', c1 / (c1+c2));
+    const result = c1 / (c1+c2);
+    console.log('colored ratio:', result);
+    const threshold = 0.4; // NB: the cleared cols change the available area!
+    if (result >= threshold) {
+      clearInterval(updateInterval);
+      successSound.play();
+      callback({
+        result: result,
+        attempts: attempts
+      });
+    } else {
+      errorSound.play();
+      attempts++;
+      mousePressed = false; //otherwise you can just hold and keep failing
+      ctx.clearRect(0, 0, WIDTH, HEIGHT);
+      timerValue.css('width', '100%');
+      paintCount = 0;
+    }
+  }
+
+  // set up interaction
+  canvas.on('mousedown', (event) => {
+    mousePressed = true;
+  });
+  canvas.on('mousemove', (event) => {
+    if (mousePressed) {
+      ctx.beginPath();
+      ctx.arc(event.clientX, event.clientY, 30, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  });
+  canvas.on('mouseup', (event) => {
+    mousePressed = false;
   });
 }
 
