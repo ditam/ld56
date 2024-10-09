@@ -9,6 +9,19 @@ body {
   font-variation-settings: "slnt" 0;
 }
 
+.end-msg {
+  position: absolute;
+  font-size: 24px;
+  top: 210px;
+  left: 370px;
+}
+.end-score {
+  position: absolute;
+  font-size: 16px;
+  left: 330px;
+  top: 240px;
+}
+
 #main {
   position: relative;
   overflow: hidden;
