@@ -269,6 +269,26 @@ function level_insects(config, container, callback) {
         const startTime = new Date().getTime();
         showTask(container, config.task);
 
+        const maxTimeAllowed = 15 * 1000;
+        let currentIterationStartTime = startTime;
+
+        // add timer bar TODO: extract as timer util
+        const timerWrap = $('<div>').addClass('timer-wrapper');
+        const timerLabel = $('<div>').addClass('label').text('Time left');
+        timerLabel.appendTo(timerWrap);
+        const timerBar = $('<div>').addClass('bar');
+        const timerValue = $('<div>').addClass('value');
+        timerValue.appendTo(timerBar);
+        timerBar.appendTo(timerWrap);
+        timerWrap.appendTo(container); // append before els to not mess with clicks
+
+        const timerUpdateInterval = setInterval(function() {
+          const currentTime = new Date().getTime();
+          const timeElapsed = currentTime - currentIterationStartTime;
+          const timeBarValue = Math.max(1 - timeElapsed/maxTimeAllowed, 0) * 100;
+          timerValue.css('width', timeBarValue+'%');
+        }, 100);
+
         const targetsData = [
           {x:  30, y:  50},
           {x: 570, y:  80},
@@ -307,6 +327,7 @@ function level_insects(config, container, callback) {
             successSound.play();
             callback({duration: endTime-startTime, attempts: attempts});
             clearInterval(expireTimeout);
+            clearInterval(timerUpdateInterval);
           }
         }
 
@@ -316,11 +337,12 @@ function level_insects(config, container, callback) {
           // if this timeout is reached without checkComplete clearing it, we lose and reset
           attempts++;
           errorSound.play();
+          currentIterationStartTime = new Date().getTime();
           targetEls.forEach(t => {
             t.data('clicked', false);
             t.removeClass('clicked');
           });
-        }, 15 * 1000);
+        }, maxTimeAllowed);
       });
     }
   );
