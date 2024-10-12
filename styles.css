@@ -147,7 +147,7 @@ body {
 
 .timer-wrapper {
   position: absolute;
-  left: 100px;
+  left: 165px;
   top: 400px;
 }
 
@@ -155,12 +155,14 @@ body {
   color: white;
   opacity: 0.3;
   text-align: center;
+  padding-bottom: 5px;
 }
 
 .timer-wrapper .bar {
   width: 500px;
   height: 32px;
   background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
 }
 
 .timer-wrapper .bar .value {
@@ -168,6 +170,7 @@ body {
   /* width re-set from JS */
   height: 32px;
   background-color: rgba(239, 161, 51, 0.3);
+  border-radius: 8px;
 }
 
 .target-marker {
@@ -189,5 +192,5 @@ body {
 }
 
 .target-marker.clicked {
-  background-color: rgba(123, 190, 8, 0.2);
+  background-color: rgba(123, 190, 8, 0.4);
 }
