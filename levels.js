@@ -216,12 +216,15 @@ function level_bacteria(config, container, callback) {
         const startTime = new Date().getTime();
         showTask(container, config.task);
 
+        const xOptions = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550];
         const targetsData = [
-          {x: 200, y:  80},
-          {x: 510, y: 110},
-          {x: 620, y: 150},
-          {x: 520, y: 220},
-          {x:  60, y: 330},
+          {x: getRandomItem(xOptions), y:  80},
+          {x: getRandomItem(xOptions), y: 110},
+          {x: getRandomItem(xOptions), y: 150},
+          {x: getRandomItem(xOptions), y: 220},
+          {x: getRandomItem(xOptions), y: 280},
+          {x: getRandomItem(xOptions), y: 330},
+          {x: getRandomItem(xOptions), y: 400},
         ];
 
         const targetEls = [];
@@ -290,15 +293,16 @@ function level_insects(config, container, callback) {
           timerValue.css('width', timeBarValue+'%');
         }, 100);
 
+        const xOptions = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550];
         const targetsData = [
-          {x:  30, y:  50},
-          {x: 570, y:  80},
-          {x: 620, y: 120},
-          {x: 300, y: 220},
-          {x: 310, y: 350},
-          {x:  60, y: 400},
-          {x: 290, y: 410},
-          {x: 600, y: 430},
+          {x: getRandomItem(xOptions), y:  50},
+          {x: getRandomItem(xOptions), y:  80},
+          {x: getRandomItem(xOptions), y: 120},
+          {x: getRandomItem(xOptions), y: 220},
+          {x: getRandomItem(xOptions), y: 350},
+          {x: getRandomItem(xOptions), y: 400},
+          {x: getRandomItem(xOptions), y: 410},
+          {x: getRandomItem(xOptions), y: 430},
         ];
 
         const targetEls = [];
@@ -426,20 +430,22 @@ function level_humans(config, container, callback) {
         const startTime = new Date().getTime();
         showTask(container, config.task);
 
+        const xOptions = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550];
+        // FIXME: naive randomization will allow duplicates that can not be clicked
         const targetsData = [
-          {x: 200, y:  80},
-          {x: 510, y: 110},
-          {x: 620, y: 150},
-          {x: 520, y: 220},
-          {x:  60, y: 330},
-          {x:  30, y:  50},
-          {x: 570, y:  80},
-          {x: 620, y: 120},
-          {x: 300, y: 220},
-          {x: 310, y: 350},
-          {x:  60, y: 400},
-          {x: 290, y: 410},
-          {x: 600, y: 430},
+          {x: getRandomItem(xOptions), y: 50 + Math.floor(Math.random()*400)},
+          {x: getRandomItem(xOptions), y: 50 + Math.floor(Math.random()*400)},
+          {x: getRandomItem(xOptions), y: 50 + Math.floor(Math.random()*400)},
+          {x: getRandomItem(xOptions), y: 50 + Math.floor(Math.random()*400)},
+          {x: getRandomItem(xOptions), y: 50 + Math.floor(Math.random()*400)},
+          {x: getRandomItem(xOptions), y: 50 + Math.floor(Math.random()*400)},
+          {x: getRandomItem(xOptions), y: 50 + Math.floor(Math.random()*400)},
+          {x: getRandomItem(xOptions), y: 50 + Math.floor(Math.random()*400)},
+          {x: getRandomItem(xOptions), y: 50 + Math.floor(Math.random()*400)},
+          {x: getRandomItem(xOptions), y: 50 + Math.floor(Math.random()*400)},
+          {x: getRandomItem(xOptions), y: 50 + Math.floor(Math.random()*400)},
+          {x: getRandomItem(xOptions), y: 50 + Math.floor(Math.random()*400)},
+          {x: getRandomItem(xOptions), y: 50 + Math.floor(Math.random()*400)},
         ];
 
         const targetEls = [];
