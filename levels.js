@@ -452,7 +452,7 @@ function level_humans(config, container, callback) {
 
         targetsData.forEach(t => {
           // FIXME: alternate wood and animal types
-          const target = $('<div>').addClass('target-marker');
+          const target = $('<div>').addClass('target-marker bad');
           targetEls.push(target);
           target.css('left', t.x + 'px');
           target.css('top' , t.y + 'px');

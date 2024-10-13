@@ -7,7 +7,7 @@ function getRandomItem(array) {
 
 function showFinalScore() {
   console.log('RESULTS:', results);
-  // FIXME - add proper counting
+  // FIXME - add proper counting, ids 1 and 3 have attempts
   const area = results[1].result;
   const s1 = Math.max(30000-results[2].duration, 0);
   const s2 = Math.max(20000-results[3].duration, 0);
