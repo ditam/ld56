@@ -67,6 +67,15 @@ body {
   font-variation-settings: "slnt" 0;
 }
 
+/*
+title coloring for LD cover:
+height: 275px;
+color: white;
+background: linear-gradient(35deg, #793003, #02960d);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+*/
+
 .title-wrapper {
   width: 100%;
   height: 100%;
