@@ -67,6 +67,7 @@ function setBG(n) {
     'bg2.png',
     'bg3.png',
     'bg4.png',
+    'bg5.png',
   ];
   $('#main').css('background-image', `url(${bgs[n]})`);
 }
@@ -75,7 +76,7 @@ function intro(config, container, callback) {
   showFadingTitle({titleText: 'Succession'}, container, callback);
 }
 
-function level_paintFill(config, container, callback) {
+function level_lichens(config, container, callback) {
   showFadingTitle(
     {
       titleText: 'Chapter One',
@@ -348,6 +349,66 @@ function level_insects(config, container, callback) {
   );
 }
 
+function level_rodents(config, container, callback) {
+  showFadingTitle(
+    {
+      // TODO: move to config
+      titleText: 'Chapter Four',
+      subtitleText: 'Rodents',
+    },
+    container,
+    function() {
+      setBG(3);
+      $('.title-wrapper').remove();
+      console.log('moving to narrative page');
+      showNarrativePage(container, config.narrativeMsgs, function() {
+        console.log('moving to impl.');
+        const startTime = new Date().getTime();
+        showTask(container, config.task);
+
+        const targetsData = [
+          // due to the animation here, x does not matter
+          {x: 200, y:  80},
+          {x: 510, y: 110},
+          {x: 620, y: 150},
+          {x: 520, y: 220},
+          {x:  60, y: 330},
+          {x:  60, y: 360},
+          {x:  60, y: 410},
+        ];
+
+        const targetEls = [];
+
+        targetsData.forEach(t => {
+          const target = $('<div>').addClass('target-marker moving');
+          // -1 so that there's no actual delay, just random offset
+          // 0-8 when animation duration is 4s, so that both directions are used
+          target.css('animation-delay', -1*getRandomItem([0, 1, 2, 3, 4, 5, 6, 7, 8])+'s');
+          targetEls.push(target);
+          target.css('left', t.x + 'px');
+          target.css('top' , t.y + 'px');
+          container.append(target);
+          target.data('clicked', false);
+          target.on('click', () => {
+            target.data('clicked', true);
+            target.addClass('clicked');
+            checkComplete();
+          });
+        });
+
+        function checkComplete() {
+          if (targetEls.every(t=>t.data('clicked'))) {
+            const endTime = new Date().getTime();
+            hideTaskMsg();
+            successSound.play();
+            callback({duration: endTime-startTime});
+          }
+        }
+      });
+    }
+  );
+}
+
 function level_humans(config, container, callback) {
   showFadingTitle(
     {
@@ -357,7 +418,7 @@ function level_humans(config, container, callback) {
     },
     container,
     function() {
-      setBG(3);
+      setBG(4); // TODO: make automatic from level order - move to main?
       $('.title-wrapper').remove();
       console.log('moving to narrative page');
       showNarrativePage(container, config.narrativeMsgs, function() {
@@ -431,7 +492,7 @@ const levels = [
       'sustaining themselves with photosynthesis.'
     ],
   },
-  controller: level_paintFill
+  controller: level_lichens
 },
 {
   name: 'Bacteria - untimed target clicking',
@@ -457,6 +518,18 @@ const levels = [
     ],
   },
   controller: level_insects
+},
+{
+  name: 'Rodents - moving clicking',
+  config: {
+    task: 'Catch all the bugs.',
+    narrativeMsgs: [
+      'Shrubs and woody plants appear, and their woody stems allow them to see through the cold and arid seasons.',
+      'Under their shade, rodents move into the habitat, feeding on insects, other invertebrates and the seeds of plants.',
+      'These ground-foraging and burrowing mammals further improve soil structure and composition.'
+    ],
+  },
+  controller: level_rodents
 },
 {
   name: 'Humans - untimed clicking',

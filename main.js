@@ -1,6 +1,10 @@
 
 let container;
 
+function getRandomItem(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
 function showFinalScore() {
   console.log('RESULTS:', results);
   // FIXME - add proper counting
@@ -8,7 +12,8 @@ function showFinalScore() {
   const s1 = Math.max(30000-results[2].duration, 0);
   const s2 = Math.max(20000-results[3].duration, 0);
   const s3 = Math.max(25000-results[4].duration, 0);
-  const score = Math.round((s1+s2+s3) * area);
+  const s4 = Math.max(25000-results[5].duration, 0);
+  const score = Math.round((s1+s2+s3+s4) * area);
   const d1 = $('<div>').addClass('end-msg').text('The end.');
   const d2 = $('<div>').addClass('end-score').text(`You scored ${score} points.`);
   d1.appendTo(container);
@@ -70,6 +75,7 @@ $(document).ready(function() {
       this.play();
     }, false);
 
+    // TODO: disallow level switching when not on localhost or dev mode
     currentLevel = 0;
     startNextLevel();
   });
